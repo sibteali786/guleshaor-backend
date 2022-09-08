@@ -6,6 +6,7 @@ const connectDB = require("./config/db.js");
 const mentorRoutes = require("./api/mentorRoutes.js");
 const studentRoutes = require("./api/studentRoutes.js");
 const userRoutes = require("./api/userRoutes.js");
+const products = require("./api/products");
 const studentsMentorRoutes = require("./api/studentsMentorRoutes.js");
 const { errorHandler, notFound } = require("./middleware/errorMiddleware.js");
 // for environment variables
@@ -21,7 +22,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/mentors", mentorRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/getAllStudents", studentsMentorRoutes);
-
+app.use("/api/products", products);
 // if (process.env.NODE_ENV === "production") {
 //   app.use(express.static(path.join(__dirname, "/frontend/build")));
 
