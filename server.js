@@ -3,10 +3,10 @@ const path = require("path");
 const dotenv = require("dotenv");
 const colors = require("colors");
 const connectDB = require("./config/db.js");
-const mentorRoutes = require("./routes/mentorRoutes.js");
-const studentRoutes = require("./routes/studentRoutes.js");
-const userRoutes = require("./routes/userRoutes.js");
-const studentsMentorRoutes = require("./routes/studentsMentorRoutes.js");
+const mentorRoutes = require("./api/mentorRoutes.js");
+const studentRoutes = require("./api/studentRoutes.js");
+const userRoutes = require("./api/userRoutes.js");
+const studentsMentorRoutes = require("./api/studentsMentorRoutes.js");
 const { errorHandler, notFound } = require("./middleware/errorMiddleware.js");
 // for environment variables
 dotenv.config();
