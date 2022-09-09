@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
@@ -17,6 +18,7 @@ connectDB();
 // Initialize the express
 const app = express();
 app.use(express.json()); // Allows to accept json data in the body of request
+app.use(cors());
 //using productRoutes and userRoutes
 app.use("/api/users", userRoutes);
 app.use("/api/mentors", mentorRoutes);
