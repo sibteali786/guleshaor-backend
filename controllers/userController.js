@@ -26,6 +26,7 @@ const authUser = asyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
         image: user.mentorDetails.image,
+        image: user.mentorDetails.image,
         token: generateToken(user._id), // not defined till now
         userType,
       });
@@ -67,20 +68,19 @@ const getUserProfile = asyncHandler(async (req, res) => {
         },
         introVideo: user?.introVideo,
         token: generateToken(user._id),
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.mentorDetails.image,
+        userType,
       });
     } else {
       res.json({
-        _id: user?._id,
-        name: user?.name,
-        email: user?.email,
-        studentDetails: {
-          ...user?.studentDetails,
-        },
-        about: {
-          ...user?.about,
-        },
-        introVideo: user?.introVideo,
-        token: generateToken(user._id),
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.studentDetails.image,
+        userType,
       });
     }
   } else {
@@ -161,7 +161,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Private
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const userType = req.body?.userDetails?.userType;
+  const userType = req.user.userType;
   let user;
   if (userType === "mentor") {
     user = await Mentor.findById(req.user._id);
@@ -175,7 +175,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body?.password;
     }
     if (userType === "mentor") {
-      user.mentorDetails = req.body?.userDetails || user?.mentorDetails;
+      user.mentorDetails = req.body?.mentorDetails || user?.mentorDetails;
       user.introVideo = req.body?.introVideo || user?.introVideo;
       // TODO:Mutate this array to retain previous values
       user.about = req.body?.about || user?.about;
@@ -185,10 +185,13 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.aboutStudents = req.body?.aboutStudents || user?.aboutStudents;
       user.feedback = req.body?.feedback || user?.feedback;
     } else if (userType === "student") {
-      user.studentDetails = req.body?.userDetails || user?.studentDetails;
+      user.studentDetails = req.body?.studentDetails || user?.studentDetails;
+      user.introVideo = req.body?.introVideo || user?.introVideo;
+      user.about.details = req.body?.about?.details || user?.about?.details;
       // TODO:Mutate this array to retain previous values
       user.about = req.body?.about || user?.about;
       user.certifications = req.body?.certifications || user?.certifications;
+      user.experiences = req.body?.experiences || user?.experiences;
       user.experiences = req.body?.experiences || user?.experiences;
       user.endorsement = req.body?.endorsement || user?.endorsement;
     }
@@ -200,7 +203,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         image: updatedUser.mentorDetails.image,
-        userType,
+        token: generateToken(updatedUser._id),
       });
     } else if (userType === "student") {
       res.json({
@@ -208,7 +211,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         image: updatedUser.studentDetails.image,
-        userType,
+        token: generateToken(updatedUser._id),
       });
     }
   }

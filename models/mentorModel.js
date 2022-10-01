@@ -15,7 +15,7 @@ const mentorSchema = new mongoose.Schema(
       },
       username: {
         type: String,
-        default: "",
+        default: "ali786",
       },
       designation: {
         type: String,
@@ -23,7 +23,7 @@ const mentorSchema = new mongoose.Schema(
       },
       image: {
         type: String,
-        default: "",
+        default: "Charted Accountant",
       },
       interpersonal: [{ type: String, default: "" }],
       technical: [{ type: String, default: "" }],

@@ -32,7 +32,7 @@ var studentSchema = new mongoose.Schema(
       },
       image: {
         type: String,
-        default: "",
+        default: "MBA",
       },
       interpersonal: [{ type: String, default: "" }],
       technical: [{ type: String, default: "" }],

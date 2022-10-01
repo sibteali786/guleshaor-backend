@@ -7,6 +7,8 @@ const users = [
       userType: "mentor",
       username: "@admin",
       designation: "UI/UX Designer and Computer Engineer",
+      image: "/images/profilePic.png",
+      designation: "UI/UX Designer and Computer Engineer",
       category: "UI/UX",
       image: "/images/profilePic.png",
       otherImages: [
@@ -73,6 +75,7 @@ const users = [
         university: "FAST NUCES",
       },
     },
+    aboutStudents:
     aboutStudents:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea sequi facere corrupti dolores quis natus aliquid tempore cumque eaque unde.Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea sequi facere corrupti dolores quis natus aliquid tempore cumque eaque unde.",
     email: "admin@example.com",
