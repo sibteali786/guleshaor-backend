@@ -57,30 +57,21 @@ const getUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     if (userType === "mentor") {
       res.json({
-        _id: user?._id,
-        name: user?.name,
-        email: user?.email,
-        mentorDetails: {
-          ...user?.mentorDetails,
-        },
-        about: {
-          ...user?.about,
-        },
-        introVideo: user?.introVideo,
-        token: generateToken(user._id),
         _id: user._id,
         name: user.name,
         email: user.email,
         image: user.mentorDetails.image,
         userType,
+        token: generateToken(user._id),
       });
     } else {
       res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        image: user.studentDetails.image,
-        userType,
+        _id: user?._id,
+        name: user?.name,
+        username: user?.studentDetails?.username,
+        email: user?.email,
+        image: user?.studentDetails?.image,
+        token: generateToken(user._id),
       });
     }
   } else {
@@ -203,7 +194,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         image: updatedUser.mentorDetails.image,
-        token: generateToken(updatedUser._id),
+        userType,
       });
     } else if (userType === "student") {
       res.json({
@@ -211,7 +202,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         image: updatedUser.studentDetails.image,
-        token: generateToken(updatedUser._id),
+        userType,
       });
     }
   }

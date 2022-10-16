@@ -44,6 +44,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "/uploads"))); // *
 app.get("/", (req, res) => {
   res.send("Api is Running......");
 });
+app.use("/uploads", express.static(path.join(path.resolve(), "/uploads"))); // * so as to access it in browser
 app.use(notFound);
 app.use(errorHandler);
 
@@ -54,5 +55,3 @@ app.listen(
     `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
   )
 );
-
-console.log("Server is running ");
