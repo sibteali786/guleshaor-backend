@@ -68,7 +68,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
       res.json({
         _id: user?._id,
         name: user?.name,
-        username: user?.studentDetails?.username,
         email: user?.email,
         image: user?.studentDetails?.image,
         token: generateToken(user._id),
@@ -152,7 +151,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Private
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const userType = req.user.userType;
+  const userType = req.body?.userDetails?.userType;
   let user;
   if (userType === "mentor") {
     user = await Mentor.findById(req.user._id);
@@ -166,7 +165,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body?.password;
     }
     if (userType === "mentor") {
-      user.mentorDetails = req.body?.mentorDetails || user?.mentorDetails;
+      user.mentorDetails = req.body?.userDetails || user?.mentorDetails;
       user.introVideo = req.body?.introVideo || user?.introVideo;
       // TODO:Mutate this array to retain previous values
       user.about = req.body?.about || user?.about;
@@ -176,13 +175,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.aboutStudents = req.body?.aboutStudents || user?.aboutStudents;
       user.feedback = req.body?.feedback || user?.feedback;
     } else if (userType === "student") {
-      user.studentDetails = req.body?.studentDetails || user?.studentDetails;
-      user.introVideo = req.body?.introVideo || user?.introVideo;
-      user.about.details = req.body?.about?.details || user?.about?.details;
+      user.studentDetails = req.body?.userDetails || user?.studentDetails;
       // TODO:Mutate this array to retain previous values
       user.about = req.body?.about || user?.about;
       user.certifications = req.body?.certifications || user?.certifications;
-      user.experiences = req.body?.experiences || user?.experiences;
       user.experiences = req.body?.experiences || user?.experiences;
       user.endorsement = req.body?.endorsement || user?.endorsement;
     }
