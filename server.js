@@ -7,7 +7,7 @@ const connectDB = require("./config/db.js");
 const mentorRoutes = require("./api/mentorRoutes.js");
 const studentRoutes = require("./api/studentRoutes.js");
 const userRoutes = require("./api/userRoutes.js");
-// const uploadRoutes = require("./api/uploadRoutes.js");
+const uploadRoutes = require("./api/uploadRoutes.js");
 const studentsMentorRoutes = require("./api/studentsMentorRoutes.js");
 const { errorHandler, notFound } = require("./middleware/errorMiddleware.js");
 // for environment variables
@@ -24,7 +24,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/mentors", mentorRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/getAllStudents", studentsMentorRoutes);
-// app.use("/api/upload", uploadRoutes);
+app.use("/api/upload", uploadRoutes);
 app.get("/", (req, res) => {
   res.send("Api is Running......");
 });
