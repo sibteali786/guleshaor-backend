@@ -28,6 +28,10 @@ const mentorSchema = new mongoose.Schema(
       interpersonal: [{ type: String, default: "" }],
       technical: [{ type: String, default: "" }],
       portfolioLink: { type: String, default: "" },
+      category: {
+        type: String,
+        default: "",
+      },
       otherImages: [
         {
           type: String,
@@ -86,28 +90,59 @@ const mentorSchema = new mongoose.Schema(
       },
     ],
     about: {
+      randomAchievement: {
+        type: String,
+        default: "",
+      },
+      gender: {
+        type: String,
+        default: "",
+      },
+      city: {
+        type: String,
+        default: "",
+      },
+      company: {
+        type: String,
+        default: "",
+      },
+      country: {
+        type: String,
+        default: "",
+      },
+      dob: {
+        type: String,
+        default: "",
+      },
       details: {
         type: String,
         default: "",
       },
       hobbies: [{ type: String, default: "" }],
-      skills: [{ type: String, default: "" }],
       education: {
-        school: {
-          name: { type: String, default: "" },
-          grade: { type: String, default: "" },
-        },
-        college: {
-          name: { type: String, default: "" },
-          grade: { type: String, default: "" },
-        },
-        university: {
-          name: { type: String, default: "" },
-          degree: { type: String, default: "" },
-          cgpa: { type: String, default: "" },
-          gpa: { type: String, default: "" },
-        },
+        degree: { type: String, default: "" },
+        university: { type: String, default: "" },
       },
+      achievements: [
+        {
+          title: {
+            type: String,
+            default: "",
+          },
+          description: {
+            type: String,
+            default: "",
+          },
+          issuedBy: {
+            type: String,
+            default: "",
+          },
+          issuedOn: {
+            type: String,
+            default: "",
+          },
+        },
+      ],
       contact: {
         mobile: { type: String, default: "" },
       },
@@ -151,6 +186,22 @@ const mentorSchema = new mongoose.Schema(
       default:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem tempora illo doloremque, a incidunt enim consequuntur at minima, eveniet minus repellat et ipsum ea voluptatem! Ea perferendis quibusdam maiores expedita.",
     },
+    timeSlots: [
+      {
+        date: { type: String, default: "" },
+        time: { type: String, default: "" },
+      },
+    ],
+    appointments: [
+      {
+        subject: { type: String, default: "" },
+        description: { type: String, default: "" },
+        date: { type: String, default: "" },
+        startTime: { type: String, default: "" },
+        endTime: { type: String, default: "" },
+        studentId: { type: String, default: "" },
+      },
+    ],
     feedback: [
       {
         studentName: { type: String, default: "" },
@@ -168,6 +219,7 @@ const mentorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     isAdmin: {
       type: Boolean,
       default: false,
