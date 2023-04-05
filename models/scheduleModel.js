@@ -27,10 +27,6 @@ const scheduleSchema = new Mongoose.Schema({
       ref: "Event",
     },
   ],
-  mentorId: {
-    type: String,
-    required: true,
-  },
 });
 
 module.exports = Mongoose.model("Schedule", scheduleSchema);
