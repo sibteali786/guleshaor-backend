@@ -1,5 +1,8 @@
 const { createEvent, getEventbyId } = require("../controllers/eventController");
-const isAuthenticated = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
+const express = require("express");
+const router = express.Router();
+router.route("/create").post(protect, createEvent);
+router.route("/:eventId").get(getEventbyId);
 
-router.route("/create").post(isAuthenticated, createEvent);
-router.route("/get/:userId").get(getEventbyId);
+module.exports = router;

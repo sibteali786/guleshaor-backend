@@ -145,4 +145,4 @@ const deleteEventById = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createEvent, getEventbyId };
+module.exports = { createEvent, getEventbyId, deleteEventById };

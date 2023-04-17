@@ -144,7 +144,6 @@ const deleteSchedule = asyncHandler(async (req, res) => {
     return res.status(500).json({ err: error.message });
   }
 });
-f;
 
 module.exports = {
   createSchedule,

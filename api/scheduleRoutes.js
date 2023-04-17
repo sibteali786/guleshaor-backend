@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const isAuthenticated = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 const {
   createSchedule,
   getSchedule,
@@ -8,7 +8,9 @@ const {
   deleteSchedule,
 } = require("../controllers/scheduleController");
 
-router.route("/create").post(isAuthenticated, createSchedule);
-router.route("/get/:userId").get(getSchedule);
-router.route("/update/:scheduleId").put(isAuthenticated, updateSchedule);
-router.route("/delete/:scheduleId").delete(isAuthenticated, deleteSchedule);
+router.route("/create").post(protect, createSchedule);
+router.route("/:userId").get(getSchedule);
+router.route("/:scheduleId").put(protect, updateSchedule);
+router.route("/:scheduleId").delete(protect, deleteSchedule);
+
+module.exports = router;
