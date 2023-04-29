@@ -7,9 +7,8 @@ const {
   updateSchedule,
   deleteSchedule,
 } = require("../controllers/scheduleController");
-
 router.route("/create").post(protect, createSchedule);
-router.route("/:userId").get(getSchedule);
+router.route("/:userId").get(protect, getSchedule);
 router.route("/:scheduleId").put(protect, updateSchedule);
 router.route("/:scheduleId").delete(protect, deleteSchedule);
 

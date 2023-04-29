@@ -30,11 +30,12 @@ const createEvent = asyncHandler(async (req, res) => {
   if (!foundSchedule) {
     return res.status(404).json({ err: "No availability set" });
   }
-
-  if (start < foundSchedule.dayStart || end > foundSchedule.dayEnd) {
+  if (
+    Number(start) < Number(foundSchedule.dayStart) ||
+    Number(end) > Number(foundSchedule.dayEnd)
+  ) {
     return res.status(404).json({ err: "Event is outside of availability" });
   }
-
   const foundClashEvents = await Event.findOne({
     menteeEmail,
     day,

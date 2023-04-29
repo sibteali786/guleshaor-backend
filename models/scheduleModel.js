@@ -10,11 +10,11 @@ const scheduleSchema = new Mongoose.Schema({
     required: true,
   },
   dayStart: {
-    type: Date,
+    type: String,
     required: true,
   },
   dayEnd: {
-    type: Date,
+    type: String,
     required: true,
   },
   eventDuration: {
@@ -29,4 +29,5 @@ const scheduleSchema = new Mongoose.Schema({
   ],
 });
 
-module.exports = Mongoose.model("Schedule", scheduleSchema);
+const schedule = Mongoose.model("Schedule", scheduleSchema);
+module.exports = schedule;

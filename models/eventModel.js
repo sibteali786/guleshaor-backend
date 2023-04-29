@@ -25,11 +25,14 @@ const eventSchema = new Mongoose.Schema({
     required: true,
   },
   start: {
-    type: Date,
+    type: String,
     required: true,
   },
   end: {
-    type: Date,
+    type: String,
     required: true,
   },
 });
+
+const event = Mongoose.model("Event", eventSchema);
+module.exports = event;

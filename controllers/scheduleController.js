@@ -7,13 +7,13 @@ const Mentor = require("../models/mentorModel");
 // @access  Private
 const createSchedule = asyncHandler(async (req, res) => {
   try {
-    const { mentor, day, dayStart, dayEnd, eventDuration } = req.body;
-    const user = req.user.id;
+    const { day, dayStart, dayEnd, eventDuration } = req.body;
+    const user = req.user._id;
     const foundUser = await Mentor.findById(user);
     if (!foundUser) {
       return res.status(404).json({ err: "User not found" });
     }
-    const presentSchedule = await schedule.findOne({ user, day });
+    const presentSchedule = await Schedule.findOne({ user, day });
     // if schedule already exists then
     if (presentSchedule) {
       return res.status(403).json({ err: "Schedule already exists" });
@@ -22,7 +22,7 @@ const createSchedule = asyncHandler(async (req, res) => {
     const scheduleStart = Number(dayStart.replace(":", "."));
     const scheduleEnd = Number(dayEnd.replace(":", "."));
     const schedule = await Schedule.create({
-      mentor,
+      mentor: user,
       day,
       dayStart: scheduleStart,
       dayEnd: scheduleEnd,
@@ -31,7 +31,6 @@ const createSchedule = asyncHandler(async (req, res) => {
     await await schedule.save();
     foundUser.schedules.push(schedule);
     await foundUser.save();
-
     res.status(200).json({
       _id: schedule._id,
       mentor: schedule.mentor,
@@ -41,6 +40,7 @@ const createSchedule = asyncHandler(async (req, res) => {
       eventDuration: schedule.eventDuration,
     });
   } catch (error) {
+    console.log("Hello");
     return res.status(500).json({ err: error });
   }
 });
@@ -59,21 +59,14 @@ const getSchedule = asyncHandler(async (req, res) => {
     if (!schedule) {
       return res.status(404).json({ err: "Schedule not found" });
     }
-    res.status(200).json({
-      _id: schedule._id,
-      mentor: schedule.mentor,
-      day: schedule.day,
-      dayStart: schedule.dayStart,
-      dayEnd: schedule.dayEnd,
-      eventDuration: schedule.eventDuration,
-    });
+    res.status(200).json(schedule);
   } catch (error) {
     return res.status(500).json({ err: error });
   }
 });
 
 // @desc    Update an Schedule by schedule id
-// @route   Put /api/schedule/create
+// @route   Put /api/schedule/:scheduleId
 // @access  Private
 
 const updateSchedule = asyncHandler(async (req, res) => {
@@ -82,7 +75,6 @@ const updateSchedule = asyncHandler(async (req, res) => {
     if (!foundSchedule) {
       return res.status(404).json({ err: "Schedule not found" });
     }
-
     if (foundSchedule.events.length > 0) {
       return res
         .status(403)
@@ -95,32 +87,25 @@ const updateSchedule = asyncHandler(async (req, res) => {
     const updateSchedule = await Schedule.updateOne(
       { _id: req.params.scheduleId },
       {
-        day,
         dayStart: scheduleStart,
         dayEnd: scheduleEnd,
         eventDuration,
       }
     );
-    res.status(200).json({
-      _id: updateSchedule._id,
-      mentor: updateSchedule.mentor,
-      day: updateSchedule.day,
-      dayStart: updateSchedule.dayStart,
-      dayEnd: updateSchedule.dayEnd,
-      eventDuration: updateSchedule.eventDuration,
-    });
+    console.log("Hy");
+    res.status(200).json(updateSchedule);
   } catch (error) {
     return res.status(500).json({ err: error.message });
   }
 });
 
 // @desc    Delete an Schedule by schedule id
-// @route   Delete /api/schedule/create
+// @route   Delete /api/schedule/:scheduleId
 // @access  Private
 
 const deleteSchedule = asyncHandler(async (req, res) => {
   try {
-    const foundUser = await Mentor.findById(req.user.id);
+    const foundUser = await Mentor.findById(req.user._id);
     if (!foundUser) {
       return res.status(404).json({ err: "Mentor not found" });
     }
