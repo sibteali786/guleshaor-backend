@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Schedule = require("../models/scheduleModel");
 const Mentor = require("../models/mentorModel");
-
+const { ObjectId } = require("mongoose").Types;
 // @desc    Create Schedule
 // @route   Post /api/schedule/create
 // @access  Private
@@ -13,34 +13,66 @@ const createSchedule = asyncHandler(async (req, res) => {
     if (!foundUser) {
       return res.status(404).json({ err: "User not found" });
     }
-    const presentSchedule = await Schedule.findOne({ user, day });
-    // if schedule already exists then
-    if (presentSchedule) {
-      return res.status(403).json({ err: "Schedule already exists" });
+
+    let schedules = [];
+    if (Array.isArray(req.body.data)) {
+      // If the request body is an array, loop through each object and create a new schedule for each one
+      for (const scheduleData of req.body.data) {
+        const { day, dayStart, dayEnd, eventDuration } = scheduleData;
+
+        const presentSchedule = await Schedule.findOne({ user, day });
+        if (presentSchedule) {
+          // If schedule already exists, skip to the next object
+          continue;
+        }
+
+        const scheduleStart = Number(dayStart.replace(":", "."));
+        const scheduleEnd = Number(dayEnd.replace(":", "."));
+        const schedule = await Schedule.create({
+          mentor: user,
+          day,
+          dayStart: scheduleStart,
+          dayEnd: scheduleEnd,
+          eventDuration,
+        });
+        await schedule.save();
+        foundUser.schedules.push(schedule);
+        schedules.push(schedule);
+      }
+    } else {
+      // If the request body is a single object, create a new schedule for it
+      const presentSchedule = await Schedule.findOne({ user, day });
+      if (presentSchedule) {
+        return res.status(403).json({ err: "Schedule already exists" });
+      }
+
+      const scheduleStart = Number(dayStart.replace(":", "."));
+      const scheduleEnd = Number(dayEnd.replace(":", "."));
+      const schedule = await Schedule.create({
+        mentor: user,
+        day,
+        dayStart: scheduleStart,
+        dayEnd: scheduleEnd,
+        eventDuration,
+      });
+      await schedule.save();
+      foundUser.schedules.push(schedule);
+      schedules.push(schedule);
     }
-    // if schedule does not exist then
-    const scheduleStart = Number(dayStart.replace(":", "."));
-    const scheduleEnd = Number(dayEnd.replace(":", "."));
-    const schedule = await Schedule.create({
-      mentor: user,
-      day,
-      dayStart: scheduleStart,
-      dayEnd: scheduleEnd,
-      eventDuration,
-    });
-    await await schedule.save();
-    foundUser.schedules.push(schedule);
+
     await foundUser.save();
-    res.status(200).json({
-      _id: schedule._id,
-      mentor: schedule.mentor,
-      day: schedule.day,
-      dayStart: schedule.dayStart,
-      dayEnd: schedule.dayEnd,
-      eventDuration: schedule.eventDuration,
-    });
+    res.status(200).json(
+      schedules.map((schedule) => ({
+        _id: schedule._id,
+        mentor: schedule.mentor,
+        day: schedule.day,
+        dayStart: schedule.dayStart,
+        dayEnd: schedule.dayEnd,
+        eventDuration: schedule.eventDuration,
+      }))
+    );
   } catch (error) {
-    console.log("Hello");
+    console.log(error);
     return res.status(500).json({ err: error });
   }
 });
@@ -130,9 +162,44 @@ const deleteSchedule = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete all Schedules
+// @route   Delete /api/schedule/deleteAll/:userId
+// @access  Private
+
+const deleteAllSchedule = asyncHandler(async (req, res) => {
+  try {
+    const isValidObjectId = ObjectId.isValid(req.user._id);
+    if (!isValidObjectId) {
+      return res.status(400).json({ err: "Invalid user ID" });
+    }
+    const foundUser = await Mentor.findById(req.user._id);
+    if (!foundUser) {
+      return res.status(404).json({ err: "Mentor not found" });
+    }
+    const foundSchedule = await Schedule.find({ mentor: req.user._id });
+
+    if (foundSchedule.length === 0) {
+      return res.status(403).json({ err: "Schedule not found" });
+    }
+    if (foundSchedule.some((s) => s.events.length > 0)) {
+      return res
+        .status(403)
+        .json({ err: "Cannot delete a schedule with events" });
+    }
+
+    await Schedule.deleteMany({ mentor: req.user._id });
+    foundUser.schedules = [];
+    await foundUser.save();
+    res.status(200).json({ msg: "Schedules deleted" });
+  } catch (error) {
+    return res.status(500).json({ err: error.message });
+  }
+});
+
 module.exports = {
   createSchedule,
   getSchedule,
   updateSchedule,
   deleteSchedule,
+  deleteAllSchedule,
 };
